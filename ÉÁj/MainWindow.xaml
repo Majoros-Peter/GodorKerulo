@@ -14,13 +14,17 @@
             <Setter Property="Height" Value="30"/>
         </Style>
     </Window.Resources>
+    
+    <StackPanel>
         <StackPanel>
-            <StackPanel>
-            
-            </StackPanel>
-        
-        <Viewbox>
-            <Grid x:Name="grid" Background="GreenYellow"/>
-        </Viewbox>
+            <Button x:Name="btnLepes"
+                    Background="LightGray"
+                    Foreground="Black"
+                    Width="140"
+                    Height="25"
+                    Content="Lépés"/>
+        </StackPanel>
+
+        <Grid x:Name="grid" Background="GreenYellow" Height="450"/>
     </StackPanel>
 </Window>

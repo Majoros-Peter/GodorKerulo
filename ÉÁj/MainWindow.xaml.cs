@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,11 +26,14 @@ namespace ÉÁj
         {
             InitializeComponent();
 
+            btnLepes.Click += (_, _) => Lepked();
             Letrehoz();
         }
 
         private void Letrehoz()
         {
+            var lehetseges = Enumerable.Range(0, OSZLOPOKSZAMA * SOROKSZAMA).ToList();
+
             for (int i = 0; i < OSZLOPOKSZAMA; i++)
                 grid.RowDefinitions.Add(new());
 
@@ -40,12 +44,10 @@ namespace ÉÁj
 
             for (int i = 0; i < LEPKEDOKSZAMA; i++)
             {
-            General:
-                int koord = RAND.Next(OSZLOPOKSZAMA * SOROKSZAMA);
-                if (AI.Foglalt.Contains(koord))
-                    goto General;
+                int koord = lehetseges[RAND.Next(lehetseges.Count)];
+                lehetseges.Remove(koord);
 
-                AI ai = new(koord % OSZLOPOKSZAMA, koord / OSZLOPOKSZAMA, koord);
+                AI ai = new(koord);
 
                 Button btn = new()
                 {
@@ -60,10 +62,10 @@ namespace ÉÁj
 
             for (int i = 0; i < LEKEKSZAMA; i++)
             {
-            General:
-                int koord = RAND.Next(OSZLOPOKSZAMA * SOROKSZAMA);
-                if (AI.Foglalt.Contains(koord))
-                    goto General;
+                int koord = lehetseges[RAND.Next(lehetseges.Count)];
+                lehetseges.Remove(koord);
+
+                AI.Jukak.Add(AI.IntToPoint(koord));
 
                 Ellipse Juk = new()
                 {
@@ -77,11 +79,27 @@ namespace ÉÁj
         }
 
         private void Lepked()
-        {
-            AI.EAjok.ForEach(ai =>
+        {   
+            for (int i = 0; i < AI.EAjok.Count; i++)
             {
+                AI ai = AI.EAjok[i];
 
-            });
+                System.Drawing.Point honnan = ai.Coord;
+                ai.Coord = ai.Lepes();
+
+                Button btn = grid.Children.OfType<Button>().First(G => Grid.GetColumn(G) == honnan.X && Grid.GetRow(G) == honnan.Y);
+
+                if(ai.X == -1 || ai.Y == -1)
+                {
+                    grid.Children.Remove(btn);
+                    continue;
+                }
+
+                Grid.SetColumn(btn, ai.X);
+                Grid.SetRow(btn, ai.Y);   
+            }
+
+            AI.EAjok = AI.EAjok.Where(G => !(G.X == -1 || G.Y == -1)).ToList();
         }
     }
 
