@@ -13,18 +13,40 @@
             <Setter Property="Width" Value="30"/>
             <Setter Property="Height" Value="30"/>
         </Style>
+        
+        <Style TargetType="ColumnDefinition">
+            <Setter Property="Width" Value="30"/>
+        </Style>
+
+        <Style TargetType="RowDefinition">
+            <Setter Property="Height" Value="30"/>
+        </Style>
     </Window.Resources>
     
     <StackPanel>
         <StackPanel>
-            <Button x:Name="btnLepes"
-                    Background="LightGray"
-                    Foreground="Black"
-                    Width="140"
-                    Height="25"
-                    Content="Lépés"/>
+            <StackPanel Orientation="Horizontal">
+                <RadioButton GroupName="AutoManual" IsThreeState="False" VerticalAlignment="Center" Checked="Automata_Mode" Unchecked="Manual_Mode"/>
+                <TextBlock Text="Automata" FontSize="14" VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <RadioButton GroupName="AutoManual" IsThreeState="False" IsChecked="True" VerticalAlignment="Center"/>
+                <TextBlock Text="Manuális" FontSize="14" VerticalAlignment="Center"/>
+                
+                <Button x:Name="btnLepes"
+                        Background="LightGray"
+                        Foreground="Black"
+                        Width="140"
+                        Height="25"
+                        Margin="10"
+                        Content="Lépés"
+                        HorizontalAlignment="Left"/>
+            </StackPanel>
         </StackPanel>
 
-        <Grid x:Name="grid" Background="GreenYellow" Height="450"/>
+        <Viewbox>
+            <Grid x:Name="grid" Background="GreenYellow"/>
+        </Viewbox>
     </StackPanel>
 </Window>

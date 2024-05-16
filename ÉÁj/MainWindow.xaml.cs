@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using static ÉÁj.CONSTS;
 
 namespace ÉÁj
@@ -22,27 +15,29 @@ namespace ÉÁj
     /// </summary>
     public partial class MainWindow : Window
     {
+        private DispatcherTimer timer = new() { Interval = TimeSpan.FromSeconds(.75) };
+
         public MainWindow()
         {
             InitializeComponent();
 
-            btnLepes.Click += (_, _) => Lepked();
             Letrehoz();
+
+            timer.Tick += Lepked;
+            btnLepes.Click += Lepked;
         }
 
         private void Letrehoz()
         {
             var lehetseges = Enumerable.Range(0, OSZLOPOKSZAMA * SOROKSZAMA).ToList();
 
-            for (int i = 0; i < OSZLOPOKSZAMA; i++)
+            for(int i = 0; i < SOROKSZAMA; i++)
                 grid.RowDefinitions.Add(new());
 
-
-            for (int i = 0; i < OSZLOPOKSZAMA; i++)
+            for(int i = 0; i < OSZLOPOKSZAMA; i++)
                 grid.ColumnDefinitions.Add(new());
 
-
-            for (int i = 0; i < LEPKEDOKSZAMA; i++)
+            for(int i = 0; i < LEPKEDOKSZAMA; i++)
             {
                 int koord = lehetseges[RAND.Next(lehetseges.Count)];
                 lehetseges.Remove(koord);
@@ -60,7 +55,7 @@ namespace ÉÁj
                 Grid.SetRow(btn, ai.Y);
             }
 
-            for (int i = 0; i < LEKEKSZAMA; i++)
+            for(int i = 0; i < LEKEKSZAMA; i++)
             {
                 int koord = lehetseges[RAND.Next(lehetseges.Count)];
                 lehetseges.Remove(koord);
@@ -78,9 +73,9 @@ namespace ÉÁj
             }
         }
 
-        private void Lepked()
-        {   
-            for (int i = 0; i < AI.EAjok.Count; i++)
+        private void Lepked(object sender, EventArgs e)
+        {
+            for(int i = 0; i < AI.EAjok.Count; i++)
             {
                 AI ai = AI.EAjok[i];
 
@@ -96,10 +91,22 @@ namespace ÉÁj
                 }
 
                 Grid.SetColumn(btn, ai.X);
-                Grid.SetRow(btn, ai.Y);   
+                Grid.SetRow(btn, ai.Y);
             }
 
             AI.EAjok = AI.EAjok.Where(G => !(G.X == -1 || G.Y == -1)).ToList();
+        }
+
+        private void Automata_Mode(object sender, RoutedEventArgs e)
+        {
+            timer.Start();
+            btnLepes.IsEnabled = false;
+        }
+
+        private void Manual_Mode(object sender, RoutedEventArgs e)
+        {
+            timer.Stop();
+            btnLepes.IsEnabled = true;
         }
     }
 
@@ -107,8 +114,8 @@ namespace ÉÁj
     {
         public const int OSZLOPOKSZAMA = 30;
         public const int SOROKSZAMA = 15;
-        public const int LEKEKSZAMA = 10;
-        public const int LEPKEDOKSZAMA = 150;
+        public const int LEKEKSZAMA = 20;
+        public const int LEPKEDOKSZAMA = 100;
 
         public static readonly Random RAND = new();
     }
